@@ -21,7 +21,7 @@
     "should": "~0.6"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha test/*.coffee"
   },
   "main": "lib/underscore.inflections.js"
 }
