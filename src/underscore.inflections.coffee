@@ -173,9 +173,14 @@ class Inflections
   # Examples:
   #
   #     _.pluralize('')
-  pluralize: (word, count, plural) =>
+  pluralize: (word, count, options = {}) =>
+    options = _.extend { plural: undefined, showNumber: true }, options
+
     if count isnt undefined
-      "#{count ? 0} " + if count is 1 or count?.toString?().match(/^1(\.0+)?$/) then word else (plural ? @pluralize(word))
+      result = ""
+      console.log options.showNumber
+      result += "#{count ? 0} " if options.showNumber is true
+      result += if count is 1 or count?.toString?().match(/^1(\.0+)?$/) then word else (options.plural ? @pluralize(word))
     else
       @apply_inflections(word, @plurals)
 

@@ -134,7 +134,7 @@
       it("should inflect an empty string", function() {
         return _.pluralize("").should.equal("");
       });
-      return it("should inflect with a count", function() {
+      it("should inflect with a count", function() {
         _.pluralize("count", 1).should.equal("1 count");
         _.pluralize("count", 2).should.equal("2 counts");
         _.pluralize("count", '1').should.equal("1 count");
@@ -143,12 +143,62 @@
         _.pluralize("count", '1.25').should.equal("1.25 counts");
         _.pluralize("count", '1.0').should.equal("1.0 count");
         _.pluralize("count", '1.00').should.equal("1.00 count");
-        _.pluralize("count", 0, "counters").should.equal("0 counters");
-        _.pluralize("count", null, "counters").should.equal("0 counters");
+        _.pluralize("count", 0, {
+          plural: "counters"
+        }).should.equal("0 counters");
+        _.pluralize("count", null, {
+          plural: "counters"
+        }).should.equal("0 counters");
         _.pluralize("person", 2).should.equal("2 people");
         _.pluralize("buffalo", 10).should.equal("10 buffaloes");
         _.pluralize("berry", 1).should.equal("1 berry");
         return _.pluralize("berry", 12).should.equal("12 berries");
+      });
+      return it("should inflect with count, but not show number", function() {
+        _.pluralize("count", 1, {
+          showNumber: false
+        }).should.equal("count");
+        _.pluralize("count", 2, {
+          showNumber: false
+        }).should.equal("counts");
+        _.pluralize("count", '1', {
+          showNumber: false
+        }).should.equal("count");
+        _.pluralize("count", '2', {
+          showNumber: false
+        }).should.equal("counts");
+        _.pluralize("count", '1,066', {
+          showNumber: false
+        }).should.equal("counts");
+        _.pluralize("count", '1.25', {
+          showNumber: false
+        }).should.equal("counts");
+        _.pluralize("count", '1.0', {
+          showNumber: false
+        }).should.equal("count");
+        _.pluralize("count", '1.00', {
+          showNumber: false
+        }).should.equal("count");
+        _.pluralize("count", 0, {
+          plural: "counters",
+          showNumber: false
+        }).should.equal("counters");
+        _.pluralize("count", null, {
+          plural: "counters",
+          showNumber: false
+        }).should.equal("counters");
+        _.pluralize("person", 2, {
+          showNumber: false
+        }).should.equal("people");
+        _.pluralize("buffalo", 10, {
+          showNumber: false
+        }).should.equal("buffaloes");
+        _.pluralize("berry", 1, {
+          showNumber: false
+        }).should.equal("berry");
+        return _.pluralize("berry", 12, {
+          showNumber: false
+        }).should.equal("berries");
       });
     });
     describe('uncountable', function() {
