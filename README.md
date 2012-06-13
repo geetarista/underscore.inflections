@@ -1,4 +1,4 @@
-# underscore.inflections
+# underscore.inflections [![Build Status](https://secure.travis-ci.org/geetarista/underscore.inflections.png)](http://travis-ci.org/geetarista/underscore.inflections)
 
 Port of ActiveSupport::Inflector::Inflections for Underscore.js.
 
