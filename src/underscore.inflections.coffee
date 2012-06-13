@@ -173,8 +173,11 @@ class Inflections
   # Examples:
   #
   #     _.pluralize('')
-  pluralize: (word) =>
-    @apply_inflections(word, @plurals)
+  pluralize: (word, count, plural) =>
+    if count isnt undefined
+      "#{count ? 0} " + if count is 1 or count?.toString?().match(/^1(\.0+)?$/) then word else (plural ? @pluralize(word))
+    else
+      @apply_inflections(word, @plurals)
 
   # Singularizes a word
   singularize: (word) =>

@@ -147,6 +147,22 @@ describe 'underscore.inflections', ->
     it "should inflect an empty string", ->
       _.pluralize("").should.equal ""
 
+    it "should inflect with a count", ->
+      _.pluralize("count", 1).should.equal "1 count"
+      _.pluralize("count", 2).should.equal "2 counts"
+      _.pluralize("count", '1').should.equal "1 count"
+      _.pluralize("count", '2').should.equal "2 counts"
+      _.pluralize("count", '1,066').should.equal "1,066 counts"
+      _.pluralize("count", '1.25').should.equal "1.25 counts"
+      _.pluralize("count", '1.0').should.equal "1.0 count"
+      _.pluralize("count", '1.00').should.equal "1.00 count"
+      _.pluralize("count", 0, "counters").should.equal "0 counters"
+      _.pluralize("count", null, "counters").should.equal "0 counters"
+      _.pluralize("person", 2).should.equal "2 people"
+      _.pluralize("buffalo", 10).should.equal "10 buffaloes"
+      _.pluralize("berry", 1).should.equal "1 berry"
+      _.pluralize("berry", 12).should.equal "12 berries"
+
   describe 'uncountable', ->
     _.each defaultUncountables, (word) ->
       it "should test uncountability of #{word} with pluralize", ->
