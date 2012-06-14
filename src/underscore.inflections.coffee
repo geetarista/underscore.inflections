@@ -178,7 +178,6 @@ class Inflections
 
     if count isnt undefined
       result = ""
-      console.log options.showNumber
       result += "#{count ? 0} " if options.showNumber is true
       result += if count is 1 or count?.toString?().match(/^1(\.0+)?$/) then word else (options.plural ? @pluralize(word))
     else
