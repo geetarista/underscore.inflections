@@ -60,10 +60,10 @@ Converts a word to its pluralized form.
 Examples:
 
 ```javascript
-_.singularize('post');      //=> 'posts'
-_.singularize('octopus');   //=> 'octopi'
-_.singularize('sheep');     //=> 'sheep'
-_.singularize('words');     //=> 'words'
+_.pluralize('post');      //=> 'posts'
+_.pluralize('octopus');   //=> 'octopi'
+_.pluralize('sheep');     //=> 'sheep'
+_.pluralize('words');     //=> 'words'
 ```
 
 ## Customizing
