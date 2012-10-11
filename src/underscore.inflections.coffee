@@ -4,7 +4,7 @@ class Inflections
   # Common uncountable words
   defaultUncountables: [
     'equipment', 'information', 'rice', 'money', 'species', 'series',
-    'fish', 'sheep', 'jeans', 'moose', 'deer', 'news'
+    'fish', 'sheep', 'jeans', 'moose', 'deer', 'news', 'music'
   ]
 
   # Plural rules
