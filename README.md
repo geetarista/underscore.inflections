@@ -33,7 +33,7 @@ Require underscore.js and underscore.inflections:
 
 ```javascript
 var _ = require('underscore');
-_.mixing(require('underscore.inflections'));
+_.mixin(require('underscore.inflections'));
 ```
 
 **Note**: When using underscore in Node's REPL, be sure to choose a variable other than `_`, as that is a special symbol used for showing the last return value.
