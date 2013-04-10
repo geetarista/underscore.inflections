@@ -121,6 +121,7 @@ irregularities =
   'child'  : 'children',
   'sex'    : 'sexes',
   'move'   : 'moves',
+  'misc.'  : 'misc.',
 
 describe 'underscore.inflections', ->
   describe 'singularize', ->

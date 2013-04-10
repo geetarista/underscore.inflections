@@ -101,7 +101,8 @@
     'man': 'men',
     'child': 'children',
     'sex': 'sexes',
-    'move': 'moves'
+    'move': 'moves',
+    'misc.': 'misc.'
   };
 
   describe('underscore.inflections', function() {

@@ -190,17 +190,20 @@ class Inflections
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.
   apply_inflections: (word, rules) =>
-    result = word
-
-    if !word or _.indexOf(@uncountables, result.toLowerCase().match(/\b\w+$/)[0]) isnt -1
-      result
+    if (!word)
+      return word
     else
-      for rule in rules
-        [regex, capture] = rule
-        if result.match regex
-          result = result.replace regex, capture
-          break
-      result
+      result = word
+      match = result.toLowerCase().match(/\b\w+$/)
+      if match and _.indexOf(@uncountables, match[0]) isnt -1
+        result
+      else
+        for rule in rules
+          [regex, capture] = rule
+          if result.match regex
+            result = result.replace regex, capture
+            break
+        result
 
 # Export to window or exports
 root = exports ? @
