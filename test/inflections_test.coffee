@@ -121,6 +121,12 @@ camelToUnderscore =
   "ApplicationController" : "application_controller"
   "Area51Controller"      : "area51_controller"
 
+camelToUnderscoreWithoutReverse =
+  "HTMLTidy"              : "html_tidy"
+  "HTMLTidyGenerator"     : "html_tidy_generator"
+  "FreeBSD"               : "free_bsd"
+  "HTML"                  : "html"
+
 irregularities =
   'person' : 'people',
   'man'    : 'men',
@@ -228,3 +234,97 @@ describe 'underscore.inflections', ->
 
     it "should remove underscores", ->
       _.camelize('Camel_Case').should.equal 'CamelCase'
+
+  describe 'acronyms', ->
+    before ->
+      _.acronym('API')
+      _.acronym('HTML')
+      _.acronym('HTTP')
+      _.acronym('RESTful')
+      _.acronym('W3C')
+      _.acronym('PhD')
+      _.acronym('RoR')
+      _.acronym('SSL')
+
+    #  camelize             underscore            humanize              titleize
+    _.each [
+      ["API",               "api",                "API",                "API"],
+      ["APIController",     "api_controller",     "API controller",     "API Controller"],
+      ["HTTPAPI",           "http_api",           "HTTP API",           "HTTP API"],
+      ["SSLError",          "ssl_error",          "SSL error",          "SSL Error"],
+      ["RESTful",           "restful",            "RESTful",            "RESTful"],
+      ["RESTfulController", "restful_controller", "RESTful controller", "RESTful Controller"],
+      ["IHeartW3C",         "i_heart_w3c",        "I heart W3C",        "I Heart W3C"],
+      ["PhDRequired",       "phd_required",       "PhD required",       "PhD Required"],
+      ["IRoRU",             "i_ror_u",            "I RoR u",            "I RoR U"],
+      ["RESTfulHTTPAPI",    "restful_http_api",   "RESTful HTTP API",   "RESTful HTTP API"],
+
+      # misdirection
+      ["Capistrano",        "capistrano",         "Capistrano",         "Capistrano"],
+      ["CapiController",    "capi_controller",    "Capi controller",    "Capi Controller"],
+      ["HttpsApis",         "https_apis",         "Https apis",         "Https Apis"],
+      ["Html5",             "html5",              "Html5",              "Html5"],
+      ["Restfully",         "restfully",          "Restfully",          "Restfully"],
+      ["RoRails",           "ro_rails",           "Ro rails",           "Ro Rails"]
+    ], (t) ->
+      camel = t[0]
+      under = t[1]
+      human = t[2]
+      title = t[3]
+      it 'should camelize as underscored', ->
+        _.camelize(under).should.equal camel
+      it 'should not change already camel cased', ->
+        _.camelize(camel).should.equal camel
+      it 'should not modify already underscored', ->
+        _.underscore(under).should.equal under
+      it 'should underscore camel cased', ->
+        _.underscore(camel).should.equal under
+
+    describe 'RESTfulHTTPAPI', ->
+      it 'does its thing', ->
+        _.underscore('RESTfulHTTPAPI').should.equal 'restful_http_api'
+
+  describe 'acronym override', ->
+    before ->
+      _.acronym('API')
+      _.acronym('LegacyApi')
+
+    it 'honors new acronym', ->
+      _.camelize('legacyapi').should.equal 'LegacyApi'
+
+    it 'does not match with underscore', ->
+      _.camelize('legacy_api').should.equal 'LegacyAPI'
+
+    it 'matches when delimited in a longer string', ->
+      _.camelize('some_legacyapi').should.equal 'SomeLegacyApi'
+
+    it 'does not match when not delimited', ->
+      _.camelize('nonlegacyapi').should.equal 'Nonlegacyapi'
+
+  describe 'acronym camelize lower', ->
+    before ->
+      _.acronym('API')
+      _.acronym('HTML')
+
+    it 'does not camelize first letter', ->
+      _.camelize('html_api', false).should.equal 'htmlAPI'
+      _.camelize('htmlAPI',  false).should.equal 'htmlAPI'
+      _.camelize('HTMLAPI',  false).should.equal 'htmlAPI'
+
+  describe 'underscore acronym sequence', ->
+    before ->
+      _.acronym('API')
+      _.acronym('JSON')
+      _.acronym('HTML')
+
+    it 'deliniates on acronym boundaries', ->
+      _.underscore('JSONHTMLAPI').should.equal 'json_html_api'
+
+  describe 'underscore', ->
+    _.each camelToUnderscore, (underscore, camel) ->
+      it 'should underscore as expected', ->
+        _.underscore(camel).should.equal underscore
+
+    _.each camelToUnderscoreWithoutReverse, (underscore, camel) ->
+      it 'should underscore without reverse as expected', ->
+        _.underscore(camel).should.equal underscore

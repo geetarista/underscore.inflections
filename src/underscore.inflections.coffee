@@ -111,9 +111,9 @@ class Inflections
       [singular, plural] = rule
       @irregular singular, plural
 
-  acronym: (word) ->
+  acronym: (word) =>
     @acronyms[word.toLowerCase()] = word
-    @acronym_regex = new RegExp @acronyms.values.join("|")
+    @acronym_matchers = _.values(@acronyms).join("|")
 
   # Specifies a new pluralization rule and its replacement. The rule can either be a string or a regular expression.
   # The replacement should always be a string that may include references to the matched data from the rule.
@@ -194,13 +194,21 @@ class Inflections
 
   camelize: (term, uppercase_first_letter = true) =>
     if uppercase_first_letter
-      console.log @acronyms
       term = term.replace /^[a-z\d]*/, (a) => @acronyms[a] || _.capitalize(a)
     else
-      term = term.replace ///^(?:#{@acronym_regex}(?=\b|[A-Z_])|\w)///, (a) -> a.toLowerCase()
+      term = term.replace ///^(?:#{@acronym_matchers}(?=\b|[A-Z_])|\w)///, (a) -> a.toLowerCase()
     term = term.replace /(?:_|(\/))([a-z\d]*)/gi, (match, $1, $2, idx, string) =>
       $1 ||= ''
       "#{$1}#{@acronyms[$2] || _.capitalize($2)}"
+
+  underscore: (camel_cased_word) =>
+    word = camel_cased_word
+    word = word.replace ///(?:([A-Za-z\d])|^)(#{@acronym_matchers})(?=\b|[^a-z])///g, (match, $1, $2) ->
+      "#{$1 || ''}#{if $1 then '_' else ''}#{$2.toLowerCase()}"
+    word = word.replace /([A-Z\d]+)([A-Z][a-z])/g, "$1_$2"
+    word = word.replace /([a-z\d])([A-Z])/g, "$1_$2"
+    word = word.replace '-', '_'
+    word = word.toLowerCase()
 
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.
