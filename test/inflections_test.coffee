@@ -127,16 +127,34 @@ camelToUnderscoreWithoutReverse =
   "FreeBSD"               : "free_bsd"
   "HTML"                  : "html"
 
-UnderscoreToLowerCamel =
+underscoreToLowerCamel =
   "product"                : "product"
   "special_guest"          : "specialGuest"
   "application_controller" : "applicationController"
   "area51_controller"      : "area51Controller"
 
-UnderscoreToHuman =
-  "employee_salary" : "Employee salary"
-  "employee_id"     : "Employee"
-  "underground"     : "Underground"
+underscoreToHuman =
+  "employee_salary"       : "Employee salary"
+  "employee_id"           : "Employee"
+  "underground"           : "Underground"
+
+mixtureToTitleCase =
+  'active_record'         : 'Active Record'
+  'ActiveRecord'          : 'Active Record'
+  'action web service'    : 'Action Web Service'
+  'Action Web Service'    : 'Action Web Service'
+  'Action web service'    : 'Action Web Service'
+  'actionwebservice'      : 'Actionwebservice'
+  'Actionwebservice'      : 'Actionwebservice'
+  "david's code"          : "David's Code"
+  "David's code"          : "David's Code"
+  "david's Code"          : "David's Code"
+  "sgt. pepper's"         : "Sgt. Pepper's"
+  "i've just seen a face" : "I've Just Seen A Face"
+  "maybe you'll be there" : "Maybe You'll Be There"
+  "¿por qué?"             : '¿Por Qué?'
+  "Fred’s"                : "Fred’s"
+  "Fred`s"                : "Fred`s"
 
 irregularities =
   'person' : 'people',
@@ -290,6 +308,10 @@ describe 'underscore.inflections', ->
         _.underscore(under).should.equal under
       it 'should underscore camel cased', ->
         _.underscore(camel).should.equal under
+      it 'titleizes underscored text as expected', ->
+        _.titleize(under).should.equal title
+      it 'titleizes camelcase text as expected', ->
+        _.titleize(camel).should.equal title
       it 'should humanize as expected', ->
         _.humanize(under).should.equal human
 
@@ -343,7 +365,7 @@ describe 'underscore.inflections', ->
         _.underscore(camel).should.equal underscore
 
   describe 'humanize', ->
-    _.each UnderscoreToHuman, (human, underscore) ->
+    _.each underscoreToHuman, (human, underscore) ->
       it 'should humanize as expected', ->
         _.humanize(underscore).should.equal human
 
@@ -363,3 +385,8 @@ describe 'underscore.inflections', ->
     it 'performs the string replacement', ->
       _.humanize('col_rpted_bugs').should.equal 'Reported bugs'
       _.humanize('COL_rpted_bugs').should.equal 'Col rpted bugs'
+
+  describe 'titleize', ->
+    _.each mixtureToTitleCase, (titleized, before) ->
+      it "titleizes #{before}", ->
+        _.titleize(before).should.equal titleized

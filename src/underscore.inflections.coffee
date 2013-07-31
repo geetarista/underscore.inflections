@@ -230,6 +230,10 @@ class Inflections
       @acronyms[match] || match.toLowerCase()
     word = _.trim(word).replace /^\w/g, (match) -> match.toUpperCase()
 
+  titleize: (word) =>
+    @humanize(@underscore(word)).replace /([\s¿]+)([a-z])/g, (match, boundary, letter, idx, string) ->
+      match.replace(letter, letter.toUpperCase())
+
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.
   apply_inflections: (word, rules) =>
@@ -253,6 +257,14 @@ root = exports ? @
 
 # Require underscore
 _ = root._ or require 'underscore'
+
+# Require underscore.string
+if require?
+  _.str = require 'underscore.string'
+  _.mixin _.str.exports()
+  _.str.include 'Underscore.string', 'string'
+else
+  _.mixin _.str.exports()
 
 # Include Inflections as a mixin to underscore
 if typeof exports is 'undefined'
