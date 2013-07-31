@@ -74,11 +74,14 @@ class Inflections
     ['zombie', 'zombies']
   ]
 
+  defaultHumanRules: []
+
   # Set up arrays and apply default rules
   constructor: ->
     @plurals = []
     @singulars = []
     @uncountables = []
+    @humans = []
     @acronyms = {}
 
     @applyDefaultRules()
@@ -162,6 +165,9 @@ class Inflections
     @uncountables.push(words)
     @uncountables = _.flatten @uncountables
 
+  human: (rule, replacement) =>
+    @humans.unshift([rule, replacement])
+
   # Clears the loaded inflections within a given scope (default is `'all'`).
   # Give the scope as a symbol of the inflection type, the options are: `'plurals'`,
   # `'singulars'`, `'uncountables'`, `'humans'`.
@@ -209,6 +215,20 @@ class Inflections
     word = word.replace /([a-z\d])([A-Z])/g, "$1_$2"
     word = word.replace '-', '_'
     word = word.toLowerCase()
+
+  humanize: (lower_case_and_underscored_word) =>
+    word = lower_case_and_underscored_word
+    for human in @humans
+      rule = human[0]
+      replacement = human[1]
+      if (rule.test? && rule.test word) || (rule.indexOf? && word.indexOf(rule) >= 0)
+        word = word.replace rule, replacement
+        break
+    word = word.replace /_id$/g, ''
+    word = word.replace /_/g, ' '
+    word = word.replace /([a-z\d]*)/gi, (match) =>
+      @acronyms[match] || match.toLowerCase()
+    word = _.trim(word).replace /^\w/g, (match) -> match.toUpperCase()
 
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.

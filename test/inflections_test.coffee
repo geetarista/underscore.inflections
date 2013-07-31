@@ -127,6 +127,17 @@ camelToUnderscoreWithoutReverse =
   "FreeBSD"               : "free_bsd"
   "HTML"                  : "html"
 
+UnderscoreToLowerCamel =
+  "product"                : "product"
+  "special_guest"          : "specialGuest"
+  "application_controller" : "applicationController"
+  "area51_controller"      : "area51Controller"
+
+UnderscoreToHuman =
+  "employee_salary" : "Employee salary"
+  "employee_id"     : "Employee"
+  "underground"     : "Underground"
+
 irregularities =
   'person' : 'people',
   'man'    : 'men',
@@ -279,6 +290,8 @@ describe 'underscore.inflections', ->
         _.underscore(under).should.equal under
       it 'should underscore camel cased', ->
         _.underscore(camel).should.equal under
+      it 'should humanize as expected', ->
+        _.humanize(under).should.equal human
 
     describe 'RESTfulHTTPAPI', ->
       it 'does its thing', ->
@@ -328,3 +341,25 @@ describe 'underscore.inflections', ->
     _.each camelToUnderscoreWithoutReverse, (underscore, camel) ->
       it 'should underscore without reverse as expected', ->
         _.underscore(camel).should.equal underscore
+
+  describe 'humanize', ->
+    _.each UnderscoreToHuman, (human, underscore) ->
+      it 'should humanize as expected', ->
+        _.humanize(underscore).should.equal human
+
+  describe 'humanize by rule', ->
+    before ->
+      _.human /_cnt$/i, '_count'
+      _.human /^prefix/i, ''
+
+    it 'applies the custom rules', ->
+      _.humanize('jargon_cnt').should.equal 'Jargon count'
+      _.humanize('prefix_request').should.equal 'Request'
+
+  describe 'humanize by string', ->
+    before ->
+      _.human 'col_rpted_bugs', 'Reported bugs'
+
+    it 'performs the string replacement', ->
+      _.humanize('col_rpted_bugs').should.equal 'Reported bugs'
+      _.humanize('COL_rpted_bugs').should.equal 'Col rpted bugs'
