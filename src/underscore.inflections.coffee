@@ -79,6 +79,7 @@ class Inflections
     @plurals = []
     @singulars = []
     @uncountables = []
+    @acronyms = {}
 
     @applyDefaultRules()
 
@@ -109,6 +110,10 @@ class Inflections
     _.each @defaultIrregularRules, (rule) =>
       [singular, plural] = rule
       @irregular singular, plural
+
+  acronym: (word) ->
+    @acronyms[word.toLowerCase()] = word
+    @acronym_regex = new RegExp @acronyms.values.join("|")
 
   # Specifies a new pluralization rule and its replacement. The rule can either be a string or a regular expression.
   # The replacement should always be a string that may include references to the matched data from the rule.
@@ -186,6 +191,16 @@ class Inflections
   # Singularizes a word
   singularize: (word) =>
     @apply_inflections(word, @singulars)
+
+  camelize: (term, uppercase_first_letter = true) =>
+    if uppercase_first_letter
+      console.log @acronyms
+      term = term.replace /^[a-z\d]*/, (a) => @acronyms[a] || _.capitalize(a)
+    else
+      term = term.replace ///^(?:#{@acronym_regex}(?=\b|[A-Z_])|\w)///, (a) -> a.toLowerCase()
+    term = term.replace /(?:_|(\/))([a-z\d]*)/gi, (match, $1, $2, idx, string) =>
+      $1 ||= ''
+      "#{$1}#{@acronyms[$2] || _.capitalize($2)}"
 
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.

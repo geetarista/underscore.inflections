@@ -115,6 +115,12 @@ singularToPlural =
   "cow"         : "kine"
   "database"    : "databases"
 
+camelToUnderscore =
+  "Product"               : "product"
+  "SpecialGuest"          : "special_guest"
+  "ApplicationController" : "application_controller"
+  "Area51Controller"      : "area51_controller"
+
 irregularities =
   'person' : 'people',
   'man'    : 'men',
@@ -211,3 +217,14 @@ describe 'underscore.inflections', ->
 
   describe 'clear', ->
     it "should test clearing rules"
+
+  describe 'camelize', ->
+    it "should propertly camelize", ->
+      _.each camelToUnderscore, (value, key, list) ->
+        _.camelize(value).should.equal key
+
+    it "should downcase the first character if passed false as a second argument", ->
+      _.camelize('Capital', false).should.equal 'capital'
+
+    it "should remove underscores", ->
+      _.camelize('Camel_Case').should.equal 'CamelCase'
