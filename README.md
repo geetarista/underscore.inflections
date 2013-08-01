@@ -108,6 +108,67 @@ Example:
 _.uncountable(['fish', 'sheep']);
 ```
 
+### Acronym
+
+Makes the following inflection methods aware of acronyms: _.camelize, _.underscore, _.humanize, _.titleize
+See inflections_test for a full specifications of the subtleties
+
+```javascript
+_.acronym("FBI");
+_.camelize("fbi_file"); //=> 'FBIFile'
+_.underscore("FBIFile"); //=> 'fbi_file'
+```
+
+### Camelize
+
+Example:
+```javascript
+_.camelize('make_me_tall');  //=> 'MakeMeTall'
+```
+
+When passed false as second parameter it does not capitalize the first word
+
+Example:
+```javascript
+_.camelize('make_me_tall', false);  //=> 'makeMeTall'
+```
+
+### Underscore
+
+Separate camel cased strings with underscores
+
+Example:
+```javascript
+_.underscore('INeedSomeSpace');  //=> 'i_need_some_space'
+```
+
+## Humanize
+
+Format underscored strings for human friendly consumption
+
+Example:
+```javascript
+_.humanize('i_just_want_to_be_understood');  //=> 'I just want to be understood'
+```
+
+You can also add humanizing rules by calling ```_.human```
+
+Example:
+```javascript
+_.human(/_cnt$/,'_count');
+_.humanize('jargon_cnt');  //=> 'Jargon count'
+```
+
+## titleize
+
+Title case a underscored or camel cased string
+
+Example:
+```javascript
+_.titleize('three_blind_mice');  //=> 'Three Blind Mice'
+_.titleize('JackAndJill'); //=> 'Jack And Jill'
+```
+
 ## License
 
 MIT. See `LICENSE`.
