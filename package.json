@@ -1,7 +1,7 @@
 {
   "name": "underscore.inflections",
   "description": "Port of ActiveSupport::Inflector::Inflections for underscore.js",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "keywords": ["inflections", "inflector", "underscore"],
   "homepage": "https://geetarista.github.com/underscore.inflections",
   "bugs": "https://github.com/geetarista/underscore.inflections/issues",
