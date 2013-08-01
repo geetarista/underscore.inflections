@@ -74,11 +74,15 @@ class Inflections
     ['zombie', 'zombies']
   ]
 
+  defaultHumanRules: []
+
   # Set up arrays and apply default rules
   constructor: ->
     @plurals = []
     @singulars = []
     @uncountables = []
+    @humans = []
+    @acronyms = {}
 
     @applyDefaultRules()
 
@@ -109,6 +113,10 @@ class Inflections
     _.each @defaultIrregularRules, (rule) =>
       [singular, plural] = rule
       @irregular singular, plural
+
+  acronym: (word) =>
+    @acronyms[word.toLowerCase()] = word
+    @acronym_matchers = _.values(@acronyms).join("|")
 
   # Specifies a new pluralization rule and its replacement. The rule can either be a string or a regular expression.
   # The replacement should always be a string that may include references to the matched data from the rule.
@@ -157,6 +165,9 @@ class Inflections
     @uncountables.push(words)
     @uncountables = _.flatten @uncountables
 
+  human: (rule, replacement) =>
+    @humans.unshift([rule, replacement])
+
   # Clears the loaded inflections within a given scope (default is `'all'`).
   # Give the scope as a symbol of the inflection type, the options are: `'plurals'`,
   # `'singulars'`, `'uncountables'`, `'humans'`.
@@ -187,6 +198,42 @@ class Inflections
   singularize: (word) =>
     @apply_inflections(word, @singulars)
 
+  camelize: (term, uppercase_first_letter = true) =>
+    if uppercase_first_letter
+      term = term.replace /^[a-z\d]*/, (a) => @acronyms[a] || _.capitalize(a)
+    else
+      term = term.replace ///^(?:#{@acronym_matchers}(?=\b|[A-Z_])|\w)///, (a) -> a.toLowerCase()
+    term = term.replace /(?:_|(\/))([a-z\d]*)/gi, (match, $1, $2, idx, string) =>
+      $1 ||= ''
+      "#{$1}#{@acronyms[$2] || _.capitalize($2)}"
+
+  underscore: (camel_cased_word) =>
+    word = camel_cased_word
+    word = word.replace ///(?:([A-Za-z\d])|^)(#{@acronym_matchers})(?=\b|[^a-z])///g, (match, $1, $2) ->
+      "#{$1 || ''}#{if $1 then '_' else ''}#{$2.toLowerCase()}"
+    word = word.replace /([A-Z\d]+)([A-Z][a-z])/g, "$1_$2"
+    word = word.replace /([a-z\d])([A-Z])/g, "$1_$2"
+    word = word.replace '-', '_'
+    word = word.toLowerCase()
+
+  humanize: (lower_case_and_underscored_word) =>
+    word = lower_case_and_underscored_word
+    for human in @humans
+      rule = human[0]
+      replacement = human[1]
+      if (rule.test? && rule.test word) || (rule.indexOf? && word.indexOf(rule) >= 0)
+        word = word.replace rule, replacement
+        break
+    word = word.replace /_id$/g, ''
+    word = word.replace /_/g, ' '
+    word = word.replace /([a-z\d]*)/gi, (match) =>
+      @acronyms[match] || match.toLowerCase()
+    word = _.trim(word).replace /^\w/g, (match) -> match.toUpperCase()
+
+  titleize: (word) =>
+    @humanize(@underscore(word)).replace /([\s¿]+)([a-z])/g, (match, boundary, letter, idx, string) ->
+      match.replace(letter, letter.toUpperCase())
+
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.
   apply_inflections: (word, rules) =>
@@ -210,6 +257,14 @@ root = exports ? @
 
 # Require underscore
 _ = root._ or require 'underscore'
+
+# Require underscore.string
+if require?
+  _.str = require 'underscore.string'
+  _.mixin _.str.exports()
+  _.str.include 'Underscore.string', 'string'
+else
+  _.mixin _.str.exports()
 
 # Include Inflections as a mixin to underscore
 if typeof exports is 'undefined'
