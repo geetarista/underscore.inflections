@@ -420,11 +420,61 @@
         return _.humanize('COL_rpted_bugs').should.equal('Col rpted bugs');
       });
     });
-    return describe('titleize', function() {
+    describe('titleize', function() {
       return _.each(mixtureToTitleCase, function(titleized, before) {
         return it("titleizes " + before, function() {
           return _.titleize(before).should.equal(titleized);
         });
+      });
+    });
+    return describe('ordinalize', function() {
+      var regularTenths;
+      regularTenths = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      it('adds "th" to all numbers ending with 11, 12 and 13', function() {
+        var exceptions;
+        exceptions = [11, 12, 13];
+        return _.each(exceptions, function(exc) {
+          return _.each(_.range(0, 11), function(hundred) {
+            var number;
+            number = hundred * 100 + exc;
+            return _.ordinalize(number).should.equal("" + number + "th");
+          });
+        });
+      });
+      it('adds "st" to all other numbers ending with 1', function() {
+        return _.each(regularTenths, function(tenth) {
+          var number;
+          number = tenth * 10 + 1;
+          return _.ordinalize(number).should.equal("" + number + "st");
+        });
+      });
+      it('adds "nd" to all other numbers ending with 2', function() {
+        return _.each(regularTenths, function(tenth) {
+          var number;
+          number = tenth * 10 + 2;
+          return _.ordinalize(number).should.equal("" + number + "nd");
+        });
+      });
+      it('adds "rd" to all other numbers ending with 3', function() {
+        return _.each(regularTenths, function(tenth) {
+          var number;
+          number = tenth * 10 + 3;
+          return _.ordinalize(number).should.equal("" + number + "rd");
+        });
+      });
+      it('adds "th" to all other numbers', function() {
+        var others;
+        others = [0, 4, 5, 6, 7, 8, 9];
+        return _.each(others, function(digit) {
+          return _.each(_.range(0, 21), function(tenth) {
+            var number;
+            number = tenth * 10 + digit;
+            return _.ordinalize(number).should.equal("" + number + "th");
+          });
+        });
+      });
+      return it('returns NaN for NaN', function() {
+        return _.ordinalize(NaN).toString().should.equal('NaN');
       });
     });
   });
