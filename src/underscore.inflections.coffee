@@ -234,6 +234,22 @@ class Inflections
     @humanize(@underscore(word)).replace /([\s¿]+)([a-z])/g, (match, boundary, letter, idx, string) ->
       match.replace(letter, letter.toUpperCase())
 
+  ordinalize: (num) =>
+    return num if isNaN(num)
+
+    number = num.toString()
+    lastDigit = number.slice(-1)
+    lastTwoDigits = number.slice(-2)
+
+    return "#{number}th" if (lastTwoDigits is '11' || lastTwoDigits is '12' || lastTwoDigits is '13')
+
+    switch ( lastDigit )
+      when '1' then "#{number}st"
+      when '2' then "#{number}nd"
+      when '3' then  "#{number}rd"
+      else "#{number}th"
+
+
   # Apple rules to a given word. If the last word fo the string is uncountable,
   # just return it. Otherwise, make the replacement and return that.
   apply_inflections: (word, rules) =>
