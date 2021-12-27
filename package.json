@@ -11,7 +11,7 @@
     "url": "http://github.com/geetarista/underscore.inflections.git"
   },
   "dependencies": {
-    "underscore": ">=1.0",
+    "underscore": ">=1.12.1",
     "underscore.string": ">=2.0.0"
   },
   "devDependencies": {
