@@ -390,3 +390,38 @@ describe 'underscore.inflections', ->
     _.each mixtureToTitleCase, (titleized, before) ->
       it "titleizes #{before}", ->
         _.titleize(before).should.equal titleized
+
+  describe 'ordinalize', ->
+    regularTenths = [0, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+    it 'adds "th" to all numbers ending with 11, 12 and 13', ->
+      exceptions = [11, 12, 13]
+      _.each exceptions, (exc) ->
+        _.each _.range(0, 11), (hundred) ->
+          number = hundred * 100 + exc
+          _.ordinalize(number).should.equal "#{number}th"
+
+    it 'adds "st" to all other numbers ending with 1', ->
+      _.each regularTenths, (tenth) ->
+        number = tenth * 10 + 1
+        _.ordinalize(number).should.equal "#{number}st"
+
+    it 'adds "nd" to all other numbers ending with 2', ->
+      _.each regularTenths, (tenth) ->
+        number = tenth * 10 + 2
+        _.ordinalize(number).should.equal "#{number}nd"
+
+    it 'adds "rd" to all other numbers ending with 3', ->
+      _.each regularTenths, (tenth) ->
+        number = tenth * 10 + 3
+        _.ordinalize(number).should.equal "#{number}rd"
+
+    it 'adds "th" to all other numbers', ->
+      others = [0, 4, 5, 6, 7, 8, 9]
+      _.each others, (digit) ->
+        _.each _.range(0, 21), (tenth) ->
+          number = tenth * 10 + digit
+          _.ordinalize(number).should.equal "#{number}th"
+
+    it 'returns NaN for NaN', ->
+      _.ordinalize(NaN).toString().should.equal 'NaN'
